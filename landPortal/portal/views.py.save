@@ -1,0 +1,366 @@
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import RequestContext, loader
+from django.shortcuts import render, render_to_response
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
+import datetime
+import os
+
+from portal.models import *
+from .forms import SiteLoginForm
+
+
+def index(request):
+
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/portal/home')
+
+
+        login_form = SiteLoginForm
+
+        if request.method == 'POST':
+                form = login_form(data=request.POST)
+
+                if not (form.is_valid()):
+                        return HttpResponse("Incorrect Username or Password")
+
+                if form.is_valid():
+                        username = request.POST.get('username', '')
+                        password = request.POST.get('password', '')
+
+                        user = authenticate(username=username, password=password)
+
+                        if user:
+                                if user.is_active:
+                                        login(request, user)
+                                        return HttpResponseRedirect('/portal/home')
+                                else:
+                                        return HttpResponse("Username is disabled")
+                else:
+                        return HttpResponse("Invalid Login Credientials")
+
+        return render(request, 'portal/login.html', { 'form' : login_form } )
+
+
+
+
+def home(request):
+	if not(request.user.is_authenticated()):
+		return HttpResponseRedirect('/portal/not_allowed')
+	else:
+		employee = Employee.objects.get(emp_user=request.user)
+		if employee.emp_level == 'employee':
+
+			return HttpResponseRedirect('/portal/employee_dash/' + str(employee.id))
+
+		elif employee.emp_level == 'office':
+			return HttpResponseRedirect('/portal/office_dashboard')
+		else:
+			return render(request, 'portal/home.html', {})
+
+
+def not_allowed(request):
+	return render(request, 'portal/not_allowed.html', {})
+
+
+def logout_page(request):
+	logout(request)
+	return render(request, 'portal/log_out.html', {})
+
+
+def employee_dash(request, emp_id):
+
+	if request.user.is_authenticated():
+
+		employee_visit = Employee.objects.get(emp_user = request.user)
+		employee_dash = Employee.objects.get(id = emp_id)
+
+		# Should be office, returns the page for the requested employee
+		if employee_visit.emp_level == 'employee':
+
+			employee_name = employee_dash.emp_name
+			loggedIn = employee_dash.isClockedIn()
+
+			hold_friday = datetime.date(2016, 5, 27)
+
+	                os.environ['TZ'] = 'US/Central'
+
+
+                	today_date = datetime.date.today()
+                	date_dif = today_date - hold_friday
+
+                	days_back = date_dif.days % 7
+
+                	week_begin = today_date - datetime.timedelta(days=days_back)
+                	week_end = today_date - datetime.timedelta(days=days_back) + datetime.timedelta(days=7)
+
+			employee_shifts = Shift.objects.filter(emp_id = employee_dash)
+               	 	shifts_this_week = employee_shifts.filter(shift_in__range=(week_begin, week_end))
+
+
+			shift_date_list = []
+                	shift_start_list = []
+                	shift_end_list = []
+                	shift_hours_list = []
+                	shift_raw_hours_list = []
+
+               		for shift in shifts_this_week:
+                        	shift_start = shift.getShiftStart()
+                        	shift_end = shift.getShiftEnd()
+
+                        	shift_start = datetime.datetime(shift_start.year, shift_start.month, shift_start.day, shift_start.hour, shift_start.minute)
+                        	shift_end = datetime.datetime(shift_end.year, shift_end.month, shift_end.day, shift_end.hour, shift_end.minute)
+
+                        	shift_date_list.append(shift_start.date())
+                        	shift_start_list.append(shift_start.time())
+                        	shift_end_list.append(shift_end.time())
+
+				if shift_end != None:
+                               		shift_hours_temp = shift_end - shift_start
+                               		shift_raw_hours_list.append(shift_hours_temp.seconds)
+
+                               		num_hours = (shift_hours_temp.seconds / 3600)
+                               		num_min = (shift_hours_temp.seconds % 3600) / 60
+
+                               		shift_hours_list.append(str(num_hours) + ' hours  ' + str(num_min) + ' min ')
+
+
+			total_hours_temp = sum(shift_raw_hours_list)
+		        hours = total_hours_temp / 3600
+               		min = (total_hours_temp % 3600) / 60
+                	total_hours = str(hours) + ' hours  ' + str(min) + ' min '
+
+                	shift_hours = 0
+
+                	if employee_dash.isClockedIn:
+                        	if not (not shift_hours_list):
+                               		shift_hours = shift_hours_list[len(shift_hours_list) - 1]
+                		else:
+              				shift_hours = 0
+
+
+			return render(request, 'portal/employee_dash.html', {'employeeName' : employee_name, 'loggedIn' : loggedIn,
+                                                                     'today_date' : today_date, 'week_begin' : week_begin, 'week_end' : week_end,
+                                                                     'shift_date_list' : shift_date_list, 'shift_start_list' : shift_start_list,
+                                                                     'shift_end_list' : shift_end_list, 'shift_hours_list' : shift_hours_list,
+                                                                     'total_hours' : total_hours, 'shift_hours' : shift_hours,        })
+
+
+
+def employee_summary(request):
+
+		if request.user.is_authenticated():
+			employee = Employee.objects.get(emp_user = request.user)
+
+			if employee.emp_level == 'employee':
+
+				hold_friday = datetime.date(2016, 5, 27)
+
+                        	os.environ['TZ'] = 'US/Central'
+
+
+	                        today_date = datetime.date.today()
+        	                date_dif = today_date - hold_friday
+
+                	        days_back = date_dif.days % 7
+
+                        	week_begin = today_date - datetime.timedelta(days=days_back)
+                        	week_end = today_date - datetime.timedelta(days=days_back) + datetime.timedelta(days=7)
+
+				shifts_this_week = Shift.objects.filter(shift_in__range=(week_begin, week_end))
+
+				employees = Employee.objects.all()
+				employee_names = []
+				employee_work_time = []
+				for emp in employees:
+					employee_names.append(emp.emp_name)
+					employee_shifts = Shift.objects.filter(emp_id = emp)
+                			shifts_this_week = employee_shifts.filter(shift_in__range=(week_begin, week_end))
+					temp_time = []
+
+					for shift in shifts_this_week:
+						shift_start = shift.getShiftStart()
+						shift_end = shift.getShiftEnd()
+
+						shift_start = datetime.datetime(shift_start.year, shift_start.month, shift_start.day, shift_start.hour, shift_start.minute)
+                        			shift_end = datetime.datetime(shift_end.year, shift_end.month, shift_end.day, shift_end.hour, shift_end.minute)
+
+						shift_time = shift_end - shift_start
+						temp_time.append(shift_time.seconds)
+
+					employee_work_time.append(sum(temp_time))
+					temp_time = []
+
+
+				return render(request, 'portal/emp_summary.html', {'employee_names' : employee_names, 'employee_work_time' : employee_work_time,
+										 'today_date' : today_date, } )
+		else:
+
+			return HttpResponseRedirect('/portal/not_allowed')
+
+
+def employee_summary_week(request, week_start):
+
+        if request.user.is_authenticated():
+                employee = Employee.objects.get(emp_user = request.user)
+
+                # Should be office, returns the page for the requested employee
+                if employee.emp_level == 'employee':
+
+			 hold_friday = datetime.date(2016, 5, 27)
+
+                         os.environ['TZ'] = 'US/Central'
+
+                         today_date = datetime.date( 2000 + int(week_start[4:6]), int(week_start[2:4]), int(week_start[0:2])   )
+                         date_dif = today_date - hold_friday
+
+                         days_back = date_dif.days % 7
+
+                         week_begin = today_date - datetime.timedelta(days=days_back)
+                         week_end = today_date - datetime.timedelta(days=days_back) + datetime.timedelta(days=7)
+
+                         shifts_this_week = Shift.objects.filter(shift_in__range=(week_begin, week_end))
+
+                         employees = Employee.objects.all()
+                         employee_names = []
+                         employee_work_time = []
+                         for emp in employees:
+                         	employee_names.append(emp.emp_name)
+                                employee_shifts = Shift.objects.filter(emp_id = emp)
+                                shifts_this_week = employee_shifts.filter(shift_in__range=(week_begin, week_end))
+                                temp_time = []
+
+                                for shift in shifts_this_week:
+                                	shift_start = shift.getShiftStart()
+                                        shift_end = shift.getShiftEnd()
+
+                                        shift_start = datetime.datetime(shift_start.year, shift_start.month, shift_start.day, shift_start.hour, shift_start.minute)
+			                shift_end = datetime.datetime(shift_end.year, shift_end.month, shift_end.day, shift_end.hour, shift_end.minute)
+
+                                        shift_time = shift_end - shift_start
+                                        temp_time.append(shift_time.seconds)
+
+                                employee_work_time.append(sum(temp_time))
+      				temp_time = []
+
+			 return render(request, 'portal/emp_summary.html', {'employee_names' : employee_names, 'employee_work_time' : employee_work_time, 
+									   'today_date' : today_date, } )
+		else:
+
+                         return HttpResponseRedirect('/portal/not_allowed')
+
+
+
+
+def employee_dashboard(request):
+
+	if request.user.is_authenticated():
+
+		usernameTemp = request.user.username
+		employee = Employee.objects.get(emp_user = request.user)
+
+		employee_name = employee.getName()
+	 	loggedIn = employee.isClockedIn()
+
+		hold_friday = datetime.date(2016, 5, 27)
+
+		os.environ['TZ'] = 'US/Central'
+
+		today_date = datetime.date.today()
+		date_dif = today_date - hold_friday
+
+		days_back = date_dif.days % 7
+
+		week_begin = today_date - datetime.timedelta(days=days_back)
+		week_end = today_date - datetime.timedelta(days=days_back) + datetime.timedelta(days=7)
+
+		employee_shifts = Shift.objects.filter(emp_id = employee)
+		shifts_this_week = employee_shifts.filter(shift_in__range=(week_begin, week_end))
+
+		shift_date_list = []
+		shift_start_list = []
+		shift_end_list = []
+		shift_hours_list = []
+		shift_raw_hours_list = []
+
+		for shift in shifts_this_week:
+			shift_start = shift.getShiftStart()
+			shift_end = shift.getShiftEnd()
+
+			shift_start = datetime.datetime(shift_start.year, shift_start.month, shift_start.day, shift_start.hour, shift_start.minute)
+			shift_end = datetime.datetime(shift_end.year, shift_end.month, shift_end.day, shift_end.hour, shift_end.minute)
+
+			shift_date_list.append(shift_start.date())
+			shift_start_list.append(shift_start.time())
+			shift_end_list.append(shift_end.time())
+
+			if shift_end != None:
+				shift_hours_temp = shift_end - shift_start
+				shift_raw_hours_list.append(shift_hours_temp.seconds)
+
+				num_hours = (shift_hours_temp.seconds / 3600)
+				num_min = (shift_hours_temp.seconds % 3600) / 60
+
+				shift_hours_list.append(str(num_hours) + ' hours  ' + str(num_min) + ' min ')
+
+
+		total_hours_temp = sum(shift_raw_hours_list)
+		hours = total_hours_temp / 3600
+		min = (total_hours_temp % 3600) / 60
+		total_hours = str(hours) + ' hours  ' + str(min) + ' min '
+
+		shift_hours = 0
+
+		if employee.isClockedIn:
+			if not (not shift_hours_list):
+				shift_hours = shift_hours_list[len(shift_hours_list) - 1]
+		else:
+			shift_hours = 0
+
+
+		returnnder(request, 'portal/employee_dash.html', {'employeeName' : employee_name, 'loggedIn' : loggedIn,
+								    'today_date' : today_date, 'week_begin' : week_begin, 'week_end' : week_end,
+								     'shift_date_list' : shift_date_l
+
+
+
+
+
+
+def login_employee(request):
+
+	if request.user.is_authenticated():
+		employee = Employee.objects.get(emp_user = request.user)
+
+		os.environ['TZ'] = 'US/Central'
+
+		if not employee.isClockedIn():
+
+			newShift = Shift(shift_in = datetime.datetime.now(), emp_id = employee)
+			newShift.save()
+
+		return HttpResponseRedirect('/portal/employee_dashboard')
+
+
+
+def logout_employee(request):
+
+	if request.user.is_authenticated():
+
+		employee = Employee.objects.get(emp_user = request.user)
+
+		shiftList = Shift.objects.filter(emp_id = employee)
+		currentShift = shiftList.get(shift_out__isnull = True)
+
+		os.environ['TZ'] = 'US/Central'
+
+		currentShift.shift_out = datetime.datetime.now()
+		currentShift.save()
+
+		return HttpResponseRedirect('/portal/employee_dashboard')
+
+

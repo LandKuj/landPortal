@@ -1,0 +1,77 @@
+
+{% extends "portal/base.html" %}
+
+{% block content %}
+
+<style>
+	#summary_table {
+		width: 90%;
+		position: relative;
+		top: -10px;
+	}
+
+	#page-name {
+		width: 90%;
+		position: relative;
+		top: -40px;
+	}
+
+	#buttons {
+		position: relative;
+		top: -35px;
+	}
+
+
+
+</style>
+
+
+<div class="container" id="page-name">
+	<div class="page-header">
+		<h3>Weekly Employee Summary | ({{ week_begin }} - {{ week_end }})</h3>   
+	</div>
+</div>
+
+<div class="container" id="buttons">
+		<a href={{ back_week_string }} class="col-lg-1 btn btn-info btn-md">
+			<span class="glyphicon glyphicon-arrow-left"></span> Last 
+		</a>
+		<a href={{ current_week_string }} class="col-lg-1 btn btn-success btn-lg">
+			<span class="glyphicon glyphicon-home"></span>
+		</a>
+		<a href={{ forward_week_string }} class="col-lg-1 btn btn-info btn-md">
+			Next <span class="glyphicon glyphicon-arrow-right"></span>
+		</a>
+</div>
+
+{% load portal_tags %}
+
+<div class="container" id="summary_table">
+	<table id="summary_table" class="table table-bordered table-condensed" align="center">
+		<th style="text-align:center" class="col-sm-2">Employee Name</th>
+		<th style="text-align:center" class="col-sm-1">Clocked In</th>
+		<th style="text-align:center" class="col-sm-2">Time Worked</th>
+		<th style="text-align:center" class="col-sm-1">Time (dec)</th>
+		<th style="text-align:center" class="col-sm-1">Detail</th>
+		{% for emp in employee_names %}
+			{% if employee_in|index:forloop.counter0 %}
+			<tr class="success">
+			{% else %}
+			<tr>
+			{% endif %}
+				<td align="center">{{ employee_names|index:forloop.counter0 }}</td>
+				<td align="center">{{ employee_in|index:forloop.counter0 }}</td>
+				<td align="center">{{ employee_work_time|index:forloop.counter0 }}</td>
+				<td align="center">{{ employee_dec_time|index:forloop.counter0 }}</td>
+				<td align="center"><a href={{ employee_id|index:forloop.counter0 }}>Show Detail</a></td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+
+
+
+
+
+
+{% endblock %}

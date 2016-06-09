@@ -1,0 +1,84 @@
+from __future__ import unicode_literals
+from django.contrib.auth.models import User
+
+import datetime
+from django.db import models
+from portal.models import *
+
+
+
+class Employee(models.Model):
+       	emp_user = models.OneToOneField(User, null=True)
+        emp_name = models.CharField(max_length=100)
+        emp_phone = models.CharField(max_length=50)
+        emp_address = models.CharField(max_length=100, null=True)
+        emp_city = models.CharField(max_length=50, null=True)
+        emp_state = models.CharField(max_length=50, null=True)
+        emp_zip = models.CharField(max_length=20, null=True)
+	emp_start_date = models.DateTimeField(null=True)
+	emp_level = models.CharField(max_length=20)
+	emp_active = models.NullBooleanField(null=True)
+	emp_notes = models.TextField(null=True)
+
+	def getName(self):
+		return self.emp_name
+
+	def getId(self):
+		return self.id
+
+	def isClockedIn(self):
+		nullShift = Shift.objects.filter(emp_id__exact= self)
+		nullShift = nullShift.filter(shift_out__isnull = True)
+
+		if nullShift.count() == 0:
+			return False
+		else:
+			return True
+
+	def isActive(self):
+		return self.emp_active
+
+
+
+class Shift(models.Model):
+       # shift_id = models.CharField(max_length=30, null=False, primary_key=True)
+        emp_id = models.ForeignKey(Employee)
+	shift_in = models.DateTimeField()
+        shift_out = models.DateTimeField(null=True)
+        shift_notes = models.TextField(null=True)
+
+	def getShiftStart(self):
+		return self.shift_in
+
+	def getShiftEnd(self):
+		if self.shift_out is None:
+			return datetime.datetime.now()
+		else:
+			return self.shift_out
+
+
+class Customer(models.Model):
+	name = models.CharField(max_length=50)
+	address = models.CharField(max_length=150, null=True)
+	city = models.CharField(max_length=50, null=True)
+	state = models.CharField(max_length=50, null=True)
+	zip = models.CharField(max_length=50, null=True)
+	phone = models.CharField(max_length=50, null=True)
+	phone2 = models.CharField(max_length=50, null=True)
+	email = models.CharField(max_length=100, null=True)
+	notes = models.TextField(null=True)
+
+
+class Order(models.Model):
+	cust_id = models.OneToOneField(Customer, null=True)
+	order_date = models.DateTimeField()
+	exp_order_date = models.DateTimeField(null=True)
+	order_type = models.CharField(max_length=100, null=True)
+	ship_method = models.CharField(max_length=200, null=True)
+	payment_terms = models.CharField(max_length=200, null=True)
+	priority = models.CharField(max_length=50, null=True)
+	status = models.CharField(max_length=100, null=True)
+	order_flag = models.CharField(max_length=50, null=True)
+	order_flag2 = models.CharField(max_length=50, null=True)
+	order_flag3 = models.CharField(max_length=50, null=True)
+	order_notes = models.TextField(null=True)

@@ -1,0 +1,95 @@
+<html>
+
+        <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+
+                <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+                 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	
+		<style>
+
+		#nav_sub_bar {  
+			position: relative; 
+			bottom: 20px; 
+			width: 100%; 
+		}
+
+		#user_name { 
+			position: relative; 
+			left: 20px; 
+		}
+			
+		#logout_link { 
+			position: relative; 
+			right: 40px; 
+			text-align: right;  
+		}
+
+
+		</style>
+
+
+
+                <title>
+                        {% block main_title %}
+                        Landgrebe MFG Resource Portal
+                        {% endblock %}
+                </title>
+        </head>
+
+        <body>
+                <nav class="navbar navbar-default">
+                        <div class="container-fluid">
+                        <div class="navbar-header">
+                                <a href="/portal/home">Land MFG</a>
+                        </div>
+                                <ul class="nav navbar-nav">
+                                        <li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Employee
+						<span class="caret"></span></a>
+					     <ul class="dropdown-menu">
+						<li>Page 1.1</li>
+					     </ul>
+					</li>
+                                        <li> <a href="/portal/production">Production</a> </li>
+                                        <li> <a href="/portal/inventory">Inventory</a> </li>
+                                        <li> <a href="/portal/purchases">Purchases</a> </li>
+                                        <li> <a href="/portal/orders">Orders</a>  </li>
+                               	</ul>
+                        </div>
+                </nav>
+
+
+	<div class="container-fluid">
+	<div id="nav_sub_bar">
+	<div class="panel panel-default"> 
+		<div class="row">
+		<div id="user_name">
+		<div class="col-xs-6"> 
+			Hi, {{request.user.username}}
+		</div>
+		</div>
+		<div id="logout_link">
+		<div class="col-xs-6">
+			<a href="/portal/logout_page">Log out</a>
+		</div>
+		</div>
+		</div>
+	</div>
+	</div>
+	</div>
+
+
+	{% block content %} 
+
+	{% endblock %}
+
+            
+
+
+
+        </body>
+
+</html>
+

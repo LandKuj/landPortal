@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<style>
+		h2 { 
+			position: fixed; 
+			top: 0px; 
+			left: 20px; 
+		}
+
+
+		form { 
+			position: fixed; 
+			top: 80px; 
+			left: 100px; 
+		}
+
+	 
+		</style>
+
+
+        </head>
+<body>
+<h2>Landgrebe MFG Portal Login</h2>
+
+<form role="form" action="" method="post">
+	{% csrf_token %} 
+	{{ form.as_p }}
+        <button type="submit">Submit</button>
+</form>
+
+
+
+
+
+</body>
+
+</html>
+
+

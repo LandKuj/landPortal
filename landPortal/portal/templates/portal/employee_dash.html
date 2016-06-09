@@ -1,0 +1,138 @@
+{% extends "portal/base.html" %}
+
+
+{% block content %}
+
+
+
+<style>
+
+	#page-name { 
+		position: relative; 
+		top: -50px; 
+	}
+
+	#clocked_in { 
+		position: relative; 
+		top: -60px;  
+	}
+
+	#clock_button { 
+		position: relative; 
+		top: -50px; 
+	}
+
+	#employee_table {  
+		position: relative; 
+	}
+
+	th { 
+		text-align: center; 
+	}
+
+	#shift_hours {
+		text-align: right; 
+		right: -50px;
+	}
+
+	#week_hours {
+		text-align: right; 
+		right: -50px;
+	}
+
+	#clock_link { 
+		color: white;
+	}
+
+
+</style>
+
+
+
+<div class="container" id="page-name">
+	<div class="page-header">
+		<h3>{{ employeeName }}'s Dashboard</h3>
+	</div>
+</div>
+
+
+<div class="container" id="clocked_in">
+	{% if loggedIn %} 
+		<p>You are <strong>clocked-in!</strong></p>
+	{% else %}
+		<p>You are <strong>clocked-out!</strong></p>
+	{% endif %}
+</div>
+
+
+<div class="container" id="clock_button">
+	{% if not loggedIn %}			
+			<a class="btn btn-success btn-lg btn-block" id="clock_link"
+				href="http://landmfg.com/portal/login_employee"> Click to Clock-in
+			</a>
+	{% else %}
+			<a class="btn btn-danger btn-lg btn-block" id="clock_link"
+				 href="http://landmfg.com/portal/logout_employee"> Click to Clock-out 
+			</a>
+	{% endif %}
+</div>
+
+
+
+<div class="container" id="dash_info">
+	<div class="col-md-4" id="dates">
+	</div>
+	<div class="col-md-3" id="shift_hours">
+		<h4>Time worked (shift)</h4>
+		<div>
+			<p>{{ shift_hours }}</p>
+		</div>
+	</div>
+	<div class="col-md-3" id="week_hours">
+		<h4>Time worked (week)</h4>
+		<div>
+			<p>{{ total_hours }}</p>
+		</div>	
+
+	</div>
+	<div class="col-md-1">
+	</div>
+</div>
+
+
+
+
+
+<div class="container">
+	<div class="page-header">
+		<h3> Shifts This Week: </h3>
+	</div>
+</div
+
+
+
+
+{% load portal_tags %}
+
+<div class="container" id="employee_table">
+   <table class="table table-bordered table-condensed">
+	<th class="col-sm-1">Shift Date</th>
+	<th class="col-sm-1">Clocked In</th>
+	<th class="col-sm-1">Clocked Out</th>
+	<th class="col-sm-1">Hours</th>
+	{% for shift in shift_date_list %}
+		<tr>
+			<td align="center">{{ shift_date_list|index:forloop.counter0 }}</td>
+			<td align="center">{{ shift_start_list|index:forloop.counter0 }}</td>
+			<td align="center">{{ shift_end_list|index:forloop.counter0 }}</td>
+			<td align="center">{{ shift_hours_list|index:forloop.counter0 }}</td>
+		</tr>
+	{% endfor %}
+   </table>
+</div>
+
+
+
+
+
+{% endblock %} 
