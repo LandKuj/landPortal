@@ -1,0 +1,79 @@
+
+{% extends 'portal/base.html' %}
+
+
+{% block content %} 
+
+<style>
+
+
+</style>
+
+
+
+<div class="container">
+<form method="post" role="form">
+	{% csrf_token %}
+	<div class="form-group row">
+	<label class="col-sm-2" for={{ prod_form.prod_name }} Product Name </label>
+		<div class="col-sm-8">
+		{{ prod_form.prod_name }}
+		</div>
+	</div>
+
+	<div class="form-group row" id="prod_desc">
+	<div class="col-sm-3">
+	<label for={{ prod_form.prod_desc }} Product Description </label>
+	</div>
+		<div class="col-sm-8">
+		{{ prod_form.prod_desc }}
+		</div>
+	</div>
+
+	<div class="form-group row" id="prod_type">
+	<div class="col-sm-2">
+	<label for={{ prod_form.prod_type }} Product Type </label>
+	</div>
+		<div>
+		{{ prod_form.prod_type }}
+		</div>
+	</div>
+
+	<div class="checkbox form-group row" id="prod_active">
+	<div class="col-sm-2">
+	<label><strong>  Product Active </strong></label>
+	</div>
+		<div>
+		{{ prod_form.prod_active }}
+		</div>
+	</div>
+
+
+
+	<div class="form-group row" id="prod_price">
+	<div class="col-sm-2">
+	<label for={{ prod_form.prod_price }} Product Price </label>
+	</div>
+		<div>
+		{{ prod_form.prod_price }}
+		</div>
+	</div>
+
+	<div class="form-group row" id="prod_notes">
+	<div class="col-sm-2">
+	<label for={{ prod_form.prod_notes }} Product Notes </label>
+	</div>
+		<div>
+		{{ prod_form.prod_notes }}
+		</div>
+	</div
+
+	<div class="form-group row" id="button">
+		<button type="submit" class="btn">Create New Product</button>
+	</div>
+
+</form>
+</div>
+
+
+{% endblock %} 

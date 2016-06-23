@@ -1,0 +1,155 @@
+from django import forms
+from django.forms import PasswordInput, formset_factory
+from django.forms.formsets import BaseFormSet
+
+
+class SiteLoginForm(forms.Form):
+	username = forms.CharField(required=True)
+	password = forms.CharField(required=True, widget=PasswordInput())
+
+
+class YesNoForm(forms.Form):
+	create_customer = forms.NullBooleanField(required=True)
+
+class CustomerForm(forms.Form):
+	name = forms.CharField(required=False)
+	address = forms.CharField(required=False)
+	city = forms.CharField(required=False)
+	state = forms.CharField(required=False)
+	zip = forms.CharField(required=False)
+	phone = forms.CharField(required=False)
+	email = forms.CharField(required=False)
+
+
+class OrderForm(forms.Form):
+	#customer = forms.CharField(required=False)
+	exp_date = forms.DateField(required=False)
+	order_type = forms.CharField(required=False)
+	ship_method = forms.CharField(required=False)
+	payment_terms = forms.CharField(required=False)
+	priority = forms.CharField(required=False)
+	order_notes = forms.CharField(required=False)
+
+class OrderItemForm(forms.Form):
+	product_type = forms.CharField(required=False)
+	product = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'placeholder' : 'product',}), required=False)
+	quantity = forms.IntegerField(widget=forms.NumberInput())
+	notes = forms.CharField(widget=forms.Textarea(attrs={'rows' : 3, 'cols' : 18,}))
+
+
+class MyForm(forms.Form):
+    original_field = forms.CharField()
+    extra_field_count = forms.CharField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        extra_fields = kwargs.pop('extra', 0)
+
+        super(MyForm, self).__init__(*args, **kwargs)
+        self.fields['extra_field_count'].initial = extra_fields
+
+        for index in range(int(extra_fields)):
+            # generate extra fields in the number specified via extra_fields
+            self.fields['extra_field_{index}'.format(index=index)] = \
+                forms.CharField()
+
+
+
+class LinkForm(forms.Form):
+
+	shift_in = forms.CharField(max_length=100,
+				 widget=forms.TextInput(attrs={
+				'placeholder': 'in', }), required=False)
+
+	shift_out = forms.CharField( widget=forms.TextInput(attrs={'placeholder' : 'out', }), required=False)
+
+
+
+class ProfileForm(forms.Form):
+
+	def __init__(self, *args, **kwargs):
+		self.user = kwargs.pop('user', None)
+		super(ProfileForm, self).__init__(*args, **kwargs)
+
+		self.fields['full_name'] = forms.CharField(
+					max_length=30, 
+					initial='first name', widget=forms.TextInput(attrs={'placeholder' : 'First Name',
+					}))
+
+
+class ProductForm(forms.Form):
+
+	prod_name = forms.CharField(max_length=100,
+					widget=forms.TextInput(attrs={
+					'placeholder' : 'Product Name', }))
+
+	prod_internalID = forms.CharField(max_length=100,
+						widget=forms.TextInput())
+
+	prod_desc = forms.CharField(max_length=200,
+					widget=forms.TextInput(attrs={
+					'placeholder' : 'Product Description', }))
+
+	prod_type = forms.CharField(max_length=100,
+					widget=forms.TextInput(attrs={
+					'placeholder' : 'Product Type', }))
+
+	prod_active = forms.NullBooleanField(widget=forms.NullBooleanSelect())
+
+	prod_flag = forms.CharField(max_length=100, widget=forms.TextInput())
+
+	prod_price = forms.FloatField(widget=forms.NumberInput())
+
+	prod_notes = forms.CharField(widget=forms.Textarea())
+
+
+
+
+class BaseLinkFormSet(BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        shift_ins = []
+        shift_outs = []
+        duplicates = False
+
+        for form in self.forms:
+            if form.cleaned_data:
+                shift_in = form.cleaned_data['shift_in']
+                shift_out = form.cleaned_data['shift_out']
+
+                # Check that no two links have the same anchor or URL
+                if shift_in and shift_out:
+                    if shift_in in shift_ins:
+                        duplicates = True
+                    shift_ins.append(shift_in)
+
+                    if shift_out in shift_outs:
+                        duplicates = True
+                    shift_outs.append(shift_out)
+
+                if duplicates:
+                    raise forms.ValidationError(
+                        'Links must have unique anchors and URLs.',
+                        code='duplicate_links'
+                    )
+
+                # Check that all links have both an anchor and URL
+                if shift_in and not shift_out:
+                    raise forms.ValidationError(
+                        'All links must have an anchor.',
+                        code='missing_anchor'
+                    )
+                elif shift_out and not shift_in:
+                    raise forms.ValidationError(
+                        'All links must have a URL.',
+                        code='missing_URL'
+                    )
+
+
+
+
+
+class PartForm(forms.Form):
+	name = forms.CharField(max_length=150, required=True)
+	desc = forms.CharField(max_length=200, 

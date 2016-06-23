@@ -1,0 +1,48 @@
+{% extends 'portal/base.html' %}
+
+
+
+{% block content %}
+{% load portal_tags %}
+
+<div class="container page-header" id="order_summary">
+    <h3>Current Orders</h3>
+</div>
+
+<div class="container">
+    <table class="table table-bordered table-condensed" align="center">
+        <th class="col-1-sm">Order ID</th>
+        <th class="col-2-sm">Customer Name</th>
+        <th class="col-1-sm">Order Date</th>
+        <th class="col-1-sm">Request Date</th>
+        <th class="col-1-sm">Status</th>
+        <th class="col-1-sm">Priority</th>
+        <th class="col-1-sm">Ship Method</th>
+            {% for order in order_in_date %}
+                <tr>
+                    <td><a href='/portal/order_detail/{{ order_internal_id|index:forloop.counter0 }}'>
+                        {{ order_internal_id|index:forloop.counter0 }}</a>
+                    </td>
+                    <td>{{ customer|index:forloop.counter0 }}</td>
+                    <td>{{ order_in_date|index:forloop.counter0 }}</td>
+                    <td>{{ order_due_date|index:forloop.counter0 }}</td>
+                    <td>{{ order_status|index:forloop.counter0 }}</td>
+                    <td>{{ order_priority|index:forloop.counter0 }}</td>
+                    <td>{{ order_ship_method|index:forloop.counter0 }}</td>
+                </tr>
+            {% endfor %}
+    </table>
+</div>
+
+
+<div class="container">
+	<button class="btn">
+		<a href="http://landmfg.com/portal/create_new_order">Create New Order</a>
+	</button>
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+
+<style>
+	#edit-button {
+		position: relative;
+		left: 60px; 
+		text-align: left;
+	}
+		
+</style>
+
+
+
+<div class="container page-header" id="main-header">
+	<h3>Order {{ order_id }} Detail Page</h3>
+</div>
+
+<div class="row container">
+	<div class="btn col-xs-3" id="edit-button">
+		<button class="btn">
+		<a href="http://landmfg.com/portal/edit_order/{{order_id_num}}">Edit Order</a>
+		</button>
+	</div>
+
+	<div class="col-xs-3" id="edit-status">
+		<form method="post">
+			{% csrf_token %}
+			{{ status_form }}
+			<div id="submit-button">
+				<button type="submit" class="btn">Change Status</button>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+
+<div class="container page-header" id="order-items">
+	 <h4>Order Items</h4>
+</div>
+
+{% load portal_tags %}
+
+<div class="container">
+	<table class="table table-bordered table-condensed">
+		<th>Product</th>
+		<th>Description</th>
+		<th>Quantity</th>
+		<th>Notes</th>
+			{% for product in product_name_list %}
+				<tr>
+					<td>{{ product_name_list|index:forloop.counter0 }}</td>
+					<td>{{ product_desc_list|index:forloop.counter0 }}</td>
+					<td>{{ product_quantity_list|index:forloop.counter0 }}</td>
+					<td>{{ product_notes_list|index:forloop.counter0 }}</td>
+					
+					
+					
+				</tr>
+			{% endfor %}
+	</table>
+</div>
+	 
+
+
+{% endblock %}

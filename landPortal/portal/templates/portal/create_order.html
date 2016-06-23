@@ -3,35 +3,37 @@
 
 {% block content %} 
 
-<div class="container" id="page-title">
-	<h3 class="page-header">Create New Order</h3>
-</div>
+{% load staticfiles %}
 
-<script>
-form_count = $("[name=extra_field_count");
-// get extra form count so we know what index to use for the next item.
-$("#add-another").click(function() {
-    element = $('<input type="text"/>');
-    element.attr('name', 'extra_field_' + form_count);
-    $("#forms").append(element);
-    // build element and append it to our forms container
+<form method="post">
+	{% csrf_token %}
+	<label> First Name</label>
+	{{ profile_form.full_name}}
+	
 
-    form_count ++;
-    $("[name=extra_field_count]").val(form_count);
-    // increment form count so our view knows to populate 
-    // that many fields for validation
-})
-</script>
+	{{ link_formset.management_form }}
 
-<form>
-{% csrf_token %}
-<div id="forms">
-    {{ form.as_p }}
-</div>
-<button id="add-another">add another</button>
-<input type="submit" />
+	{% for link_form in link_formset %}
+		<div class="link-formset">
+			{{ link_form.shift_in }}
+	
+			{{ link_form.shift_out }}
+
+		</div>
+	{% endfor %}
+
+	<input type="submit" value="add shift" class="button"/>
 </form>
 
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static '/static/jquery.formset.js' %}"></script>
+<script>
+    $('.link-formset').formset({
+        addText: 'add link',
+        deleteText: 'remove'
+    });
+</script>
 
 
 {% endblock %}

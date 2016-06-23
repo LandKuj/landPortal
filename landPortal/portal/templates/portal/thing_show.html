@@ -1,0 +1,44 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+
+
+<div class="container page-header">
+    <h3>Employee Added Needed Items</h3>
+</div>
+
+
+<div class="container">
+    <button class="btn">
+        <a href="http://landmfg.com/portal/add_thing">Add Item</a>
+    </button>
+</div>
+
+
+<div class="container">
+    <table class="table table-bordered table-condensed" align="center">
+        <th>Item Name</th>
+        <th>Item Desc</th>
+        <th>Employee Name</th>
+        <th>Delete Item</th>
+        
+        {% load portal_tags %}
+        
+        {% for name in thing_names %}
+            <tr>
+                <td>{{ thing_names|index:forloop.counter0 }}</td>
+                <td>{{ thing_desc|index:forloop.counter0 }}</td>
+                <td>{{ thing_employee_name|index:forloop.counter0 }}</td>
+                <td><a href="http://landmfg.com/portal/delete_thing/{{ thing_ids|index:forloop.counter0 }}">Delete Item</a></td>
+            </tr>
+        {% endfor %}
+            
+    </table>
+            
+        
+        
+</div>
+
+
+
+{% endblock %}

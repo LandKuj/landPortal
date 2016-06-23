@@ -1,0 +1,119 @@
+{% extends 'portal/base.html' %}
+
+
+{% block content %} 
+{% load staticfiles %}
+
+<style>
+	
+	
+	#customer-form {
+		position: relative;
+		top: 0px;
+	}
+
+	#yes-no-form { 
+		position: relative;
+		top: 40px;
+	}
+
+	#order-form {
+		position: relative;
+		top: 70px; 
+	}
+
+	#items { 
+		position: relative;
+		top: 120px; 
+	}
+
+	#submit-button {
+		position: relative; 
+		top: 150px; 
+	}
+	
+	#main-head {
+		position: relative;
+		top: -40px;
+	}
+	
+	#cust-head {
+		position: relative;
+		top: -35px;
+	}
+	
+	#order-head {
+		position: relative;
+		top: 40px;
+	}
+	
+	
+
+</style>
+
+<div class="container page-header" id="main-head">
+	<h3>Create New Order</h3>
+</div>
+
+
+<form method="post" id="main-form">
+	{% csrf_token %}
+	
+	<div class="container page-header" id="cust-head">
+		<h4>Enter Customer Information</h4>
+	</div>
+	
+	<div class="container" id="customer-form">
+	{{ customer_form }}
+	</div>
+	
+	<div class="container" id="yes-no-form">
+	{{ yes_no_form }}
+	</div>
+
+	<div class="container page-header" id="order-head">
+		<h4>Enter Order Information</h4>
+	</div>
+	
+	<div class="container" id="order-form">
+	{{ order_form }}
+	</div>
+
+
+	
+
+	<div class="container" id="items">
+	{{ item_set.management_form }}
+	{% for item_form in item_set %}
+		<div class="item-set">
+		{{ item_form }}
+		</div>
+	{% endfor %}
+	</div>
+
+	<div id="submit-button">
+		<button type="submit" class="btn"> Create Order </button>
+	</div>
+
+
+</form>
+
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static '/static/jquery.formset.js' %}"></script>
+<script>
+    $('.item-set').formset({
+        addText: 'add link',
+        deleteText: 'remove'
+    });
+</script>
+
+
+
+
+
+
+{% endblock %} 

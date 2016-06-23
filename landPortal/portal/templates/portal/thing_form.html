@@ -1,0 +1,28 @@
+{% extends "portal/base.html" %}
+
+
+{% block content %}
+
+<div class="container page-header">
+    <h3>Add Needed Item</h3>
+</div>
+
+
+<div class="container">
+    <form method='post'>
+        {% csrf_token %}
+        
+        <div class="container">
+            {{ thing_form }}
+        </div>
+        
+        <button type="submit" class="btn" id="add_button">
+            Add Item
+        </button>
+        
+    </form>
+</div>
+
+
+
+{% endblock %} 
