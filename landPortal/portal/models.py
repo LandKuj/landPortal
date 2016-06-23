@@ -174,10 +174,10 @@ class Part(models.Model):
         # 14. Ramps/Rockguard
         # 15. Replacement Parts
         part_type_choices = (
-                ('Steel - Raw', 'Steel - Raw'),
-                ('Steel - Cut', 'Steel - Cut'),
-                ('Bolts/Nuts/Washers', 'Bolts/Nuts/Washers'),
-                ('Manufactured - Input', 'Manufactured - Input'),
+                 ('Steel - Raw', 'Steel - Raw'),
+                 ('Steel - Cut', 'Steel - Cut'),
+                 ('Bolts/Nuts/Washers', 'Bolts/Nuts/Washers'),
+                 ('Manufactured - Input', 'Manufactured - Input'),
         )       
         type = models.CharField(max_length=100)
         unit = models.CharField(max_length=150, null=True)
@@ -197,16 +197,16 @@ class Purchase(models.Model):
 
 
 # Purchase breakdown table
-#class Purchase_Parts(models.Model):
-#	purchase = models.ForeignKey(Purchase)
-#	part = models.ForeignKey(Part)
-#	quantity = models.IntegerField()
-#	price = models.FloatField()
-#	notes = models.TextField(null=True)
+class Purchase_Parts(models.Model):
+	purchase = models.ForeignKey(Purchase)
+	part = models.ForeignKey(Part)
+	quantity = models.IntegerField()
+	price = models.FloatField()
+	notes = models.TextField(null=True)
 
 
 class Production(models.Model):
-#	part = models.OneToOneField(Part)
+	part = models.OneToOneField(Part)
 	name = models.CharField(max_length=150)
 	desc = models.CharField(max_length=200, null=True)
 	# This should be a choice field
@@ -227,7 +227,7 @@ class Task(models.Model):
 
 class Task_Part(models.Model):
         task = models.ForeignKey(Task)
-#        part = models.OneToOneField(Part)
+        part = models.OneToOneField(Part)
         quantity = models.IntegerField()
         
 
@@ -239,12 +239,12 @@ class Task_Step(models.Model):
 
 
 # Active Production tied to Order Items
-class Prod_Sch(models.Model):
-	production = models.ForeignKey(Production)
-	order_item = models.OneToOneField(OrderItem, null=True)
-	status = models.CharField(max_length=50, null=True)
-	location = models.CharField(max_length=100, null=True)
-	notes = models.TextField(null=True)
+#class Prod_Sch(models.Model):
+#	production = models.ForeignKey(Production)
+#	order_item = models.OneToOneField(OrderItem, null=True)
+#	status = models.CharField(max_length=50, null=True)
+#	location = models.CharField(max_length=100, null=True)
+#	notes = models.TextField(null=True)
 
 
 

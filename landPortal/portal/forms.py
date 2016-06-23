@@ -81,16 +81,16 @@ class PartForm(forms.Form):
 	name = forms.CharField(max_length=150)
 	desc = forms.CharField(max_length=200, required=False)
 	# Should be created dynamically
-	type_choices = 	(
-		('Steel - Raw', 'Steel - Raw'),
-		('Steel - Cut', 'Steel - Cut'),
-		('Bolts/Nuts/Washers', 'Bolts/Nuts/Washers'),
-        ('Manufactured - Input', 'Manufactured - Input'),
-		)
-	part_type = forms.ChoiceField(choices=type_choices, required=False)
-	supplier_choice = [(supply.name, supply.name) for supply in Supplier.objects.all()]
-	supplier = forms.ChoiceField(choices=supplier_choice, required=False)
-	supplier_part_id = forms.CharField(max_length=50, required=False)
+#	type_choices = 	(
+#		('Steel - Raw', 'Steel - Raw'),
+#		('Steel - Cut', 'Steel - Cut'),
+#		('Bolts/Nuts/Washers', 'Bolts/Nuts/Washers'),
+ #       ('Manufactured - Input', 'Manufactured - Input'),
+#		)
+#	part_type = forms.ChoiceField(choices=type_choices, required=False)
+#	supplier_choice = [(supply.name, supply.name) for supply in Supplier.objects.all()]
+#	supplier = forms.ChoiceField(choices=supplier_choice, required=False)
+#	supplier_part_id = forms.CharField(max_length=50, required=False)
 	internal_part_id = forms.CharField(max_length=50, required=False)
 	sell_price = forms.DecimalField(required=False)
 	quantity = forms.IntegerField(required=False)
