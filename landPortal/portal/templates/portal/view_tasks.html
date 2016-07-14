@@ -1,0 +1,56 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+{% load portal_tags %}
+
+<style>
+    #table {
+        position: relative;
+        top: 10px; 
+    }
+</style>
+
+
+<div class="container page-header">
+    <h3>View Tasks</h3>
+    <small>View all tasks. Click a task to view detail such as which productions it is included in as well as parts included in a task.</small>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <a class="btn btn-primary" href="http://landmfg.com/portal/create_task">Click here to add a Task</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" id="table">
+    <table class="table table-bordered table-condensed">
+        <th>Task Name</th>
+        <th>Description</th>
+        <th>Task Type</th>
+        <th>Sub-Type</th>
+        <th># Parts</th>
+        <th># Production</th>
+        
+        {% for task in names %}
+        <tr>
+            <td class="col-sm-3">
+                <a href="http://landmfg.com/portal/task_detail/{{ ids|index:forloop.counter0 }}">
+                    {{ names|index:forloop.counter0 }}
+                </a>
+            </td>
+            <td class="col-sm-5">{{ desc|index:forloop.counter0 }}</td>
+            <td class="col-sm-1">{{ types|index:forloop.counter0 }}</td>
+            <td class="col-sm-1">{{ sub_type|index:forloop.counter0 }}</td>
+            <td class="col-sm-1">0</td>
+            <td class="col-sm-1">0</td>
+        </tr>
+        {% endfor %}
+        
+        
+    </table>
+</div>
+
+{% endblock %}

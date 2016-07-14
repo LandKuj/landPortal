@@ -1,0 +1,68 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+
+<style>
+    #buttons {
+        position: relative;
+        top: 10px; 
+    }
+    
+    #form {
+        position: relative;
+        top: 15px; 
+    }
+   
+    
+</style>
+
+<div class="container page-header">
+    <h3>Edit Shift for {{ employee }}</h3>
+    <small>This page allows you to edit and delete shifts. To add a shift have the user clock-in, clock-out, and then in edit that new shift.</small>
+</div>
+
+
+<div class="container">
+        <div class=col-sm-10">
+            <small>Remember: all times are in military-time! Keep date-format as is for proper storage of changes.</small>
+        </div>
+</div>
+
+<div class="container" id="form">
+    <form method='post'>
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-3">
+                {{ shift_form.shift_in.label_tag }}
+                {{ shift_form.shift_in }}
+            </div>
+            
+            <div class="col-sm-3">
+                {{ shift_form.shift_out.label_tag }}
+                {{ shift_form.shift_out }}
+            </div>
+        </div>
+        
+        <div class="row" id="buttons">
+            <div class="col-sm-2">
+                <a class="btn btn-primary" href="http://landmfg.com/portal/home">Go Home</a>
+            </div>
+            
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit">Save Edit</a>
+                </button>
+            </div>
+        
+            <div class="col-sm-2">
+                <a class="btn btn-danger" href="http://landmfg.com/portal/delete_shift/{{ shift_id }}">Delete Shift</a>
+            </div>
+        </div>
+        
+        
+    </form>
+</div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+
+<style>
+    #name-info {
+        position: relative;
+        top: 10px;
+    }
+    #desc-tag {
+        position: relative;
+        top: 20px;
+    }
+    #desc {
+        position: relative;
+        top: 20px;
+    }
+    #inst-2 {
+        position: relative;
+        top: 30px;
+    }
+    #unit {
+        position: relative;
+        top: 30px;
+    }
+    #inst-3 {
+        position: relative;
+        top: 35px;
+    }
+    #supply-drop {
+        position: relative;
+        top: 35px;
+    }
+    #button {
+        position: relative;
+        top: 40px;
+    }
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 page-header">
+            <h3>Edit Part: {{ part_name }}</h3>
+            <small>
+                This form is for editing parts. In the future this page will also list information
+                such as tasks and production the part is used for, as well as inventory information. 
+            </small>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <form method='post'>
+        {% csrf_token %}
+        
+       <div class="row" id="inst-1">
+            <div class="col-sm-12">
+                <small>
+                    Part Name should be the technical name and concise.
+                    Select a Type. Sub-type and Description are optional but preferred.
+                </small>
+            </div>
+        </div>
+        
+        <div class="row" id="name-info">
+            <div class="col-sm-4">
+                {{ part_form.part_name.label_tag }}
+                {{ part_form.part_name }}
+            </div>
+            
+            <div class="col-sm-3">
+                {{ part_form.part_type.label_tag }}
+                {{ part_form.part_type }}
+            </div>
+            
+            <div class="col-sm-3">
+                {{ part_form.sub_type.label_tag }}
+                {{ part_form.sub_type }}
+            </div>
+        </div>
+        
+        <div class="row" id="desc-tag">
+            <div class="col-sm-3">
+                {{ part_form.description.label_tag }}
+            </div>
+        </div>
+        
+        <div class="row" id="desc">
+            <div class="col-sm-6">
+                {{ part_form.description }}
+            </div>
+        </div>
+        
+        
+        
+        
+        <div class="row" id="inst-2">
+            <div class="down-shift col-sm-12">
+                <small>
+                    Select Part Unit and Raw Storage Amount e.g. 20ft tubing is
+                    <strong>"inches - 240"</strong>
+                </small>
+            </div>
+        </div>
+        
+        
+        <div class="row" id="unit">
+            <div class="col-sm-2 down-shift">
+                {{ part_form.unit.label_tag }}
+                {{ part_form.unit }}
+            </div>
+                
+            <div class="col-sm-4 down-shift">
+                {{ part_form.raw_amount.label_tag }}
+                {{ part_form.raw_amount }}
+            </div>
+        </div>
+        
+        
+        <div class="row" id="inst-3">
+            <div class="col-sm-12 down-shift">
+                <small>
+                    Select Supplier from Drop-down. If No Supplier Select 'None'.
+                    For New Supplier Select 'New Supplier' and Populate Form
+                </small>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-4 down-shift" id="supply-drop">
+                {{ part_form.supplier.label_tag }}
+                {{ part_form.supplier }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-8 down-shift" id="supply-full">
+            {{ supplyForm }}
+            </div>
+        </div>
+        
+        
+        <button type="submit" class="btn btn-primary down-shift" id="button">
+            Create Part
+        </button>
+        
+        
+    </form>
+    
+</div>
+
+
+
+
+
+{% endblock %}

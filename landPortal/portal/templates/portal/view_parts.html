@@ -1,0 +1,77 @@
+{% extends "portal/base.html" %}
+
+
+{% block content %}
+{% load portal_tags %}
+
+<style>
+    #button {
+        position: relative;
+        top: -5px;
+        left: 10px; 
+    }
+</style>
+
+
+<div class="container page-header">
+    <h3>View Parts</h3>
+    <small>
+        This page shows all parts currently in the database.
+        Type in the search bar to filter parts by any column.
+        Use the button to add a new part.
+    </small>
+</div>
+
+<div class="container">
+
+
+
+    <div id="parts">
+        <div class="row">
+            <div class="col-sm-2" id="search">
+                <input class="search" placeholder="Search" />
+            </div>
+            <div class="col-sm-2" id="button">
+                <a class="btn btn-info" href="http://landmfg.com/portal/create_part">Add a New Part</a>
+             </div>
+        </div>
+        <table class="table table-bordered table-condensed">
+            <th>Part ID</th>
+            <th>Part Name</th>
+            <th>Part Type</th>
+            <th>Part Sub-type</th>
+            <th>Part Supplier</th>
+            <tbody class="list">
+                {% for part in names %}
+                <tr>
+                    <td class="ids">
+                        <a href="http://landmfg.com/portal/edit_part/{{ actualID|index:forloop.counter0}}">
+                            {{ inId|index:forloop.counter0 }}
+                        </a>
+                    </td>
+                    <td class="part-name">{{ names|index:forloop.counter0 }}</td>
+                    <td class="part-type">{{ types|index:forloop.counter0 }}</td>
+                    <td class="sub-type">{{ subTypes|index:forloop.counter0 }}</td>
+                    <td class="suppliers">{{ suppliers|index:forloop.counter0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
+
+<script>
+    var options = {
+        valueNames: ["ids", "part-name", "part-type", "sub-type"]
+    };
+    
+    var partList = new List("parts", options);
+    
+</script>
+
+
+{% endblock %}

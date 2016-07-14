@@ -1,0 +1,43 @@
+{% extends "portal/base.html" %}
+
+
+{% block content %}
+
+<style>
+    #buttons {
+        position: relative;
+        top: 20px; 
+    }
+</style>
+
+<div class="container page-header">
+    <h3>Part Created Successfully!</h3>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <small>
+                The part you submitted was created successfully and can be accessed by the system!
+            </small>
+        </div>
+    </div>
+
+    <div class="row" id="buttons">
+        <div class="col-sm-2">
+            <a class="btn btn-info" href="http://landmfg.com/portal/home">Return Home</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn btn-primary" href="http://landmfg.com/portal/view_parts">View Parts</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn btn-success" href="http://landmfg.com/portal/create_part">Create New Part</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

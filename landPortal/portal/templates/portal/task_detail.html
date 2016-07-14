@@ -1,0 +1,109 @@
+{% extends 'portal/base.html' %}
+
+
+{% block content %}
+
+<style>
+    
+    #task-row-2 {
+        position: relative;
+        top: 10px;
+    }
+    
+</style>
+
+
+<div class="container page-header">
+    <h3>Task Detail for {{ task_id }}</h3>
+    <small>This page is for viewing and editing a given task</small>
+</div>
+
+
+<form>
+{% csrf_token %}
+    
+<div class="container">
+    <div class="row" id="task-row-1">  
+        <div class="col-sm-3">
+            {{ task_form.name.label_tag }}
+            {{ task_form.name }}
+        </div>
+        
+        <div class="col-sm-3">
+            {{ task_form.type.label_tag }}
+            {{ task_form.type }}
+        </div>
+        
+        <div class="col-sm-3">
+            {{ task_form.sub_type.label_tag }}
+            {{ task_form.sub_type }}
+        </div>
+    </div>
+    
+    <div class="row" id="task-row-2">
+        <div class="col-sm-3">
+            {{ task_form.desc.label_tag }}
+            {{ task_form.desc }}
+    </div>
+</div>
+    
+    
+<div class="container page-header">
+    <h3>Parts included in Task</h3>
+</div>
+
+
+<div class="container">
+    {{ part_set.management_form }}
+    {% for part_form in part_set %}
+    <div class="row">
+        <div class="col-sm-8">
+            {{ part_form }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="container page-header">
+    <h3>Steps included in Task</h3>
+</div>
+    
+<div class="container">
+    {{ step_set.management_form }}
+    {% for step_form in step_set %}
+    <div class="row">
+        <div class="col-sm-3">
+            {{ step_form.step_name.label_tag }}
+            {{ step_form.step_name }}
+        </div>
+        
+        <div class="col-sm-3">
+            {{ step_form.description.label_tag }}
+            {{ step_form.description }}
+        </div>
+        
+        <div class="col-sm-3">
+            {{ step_form.order.label_tag }}
+            {{ step_form.order }}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-6">
+            {{ step_form.instructions.label_tag }}
+            {{ step_form.instructions }}
+        </div>
+    </div>
+    
+    {% endfor %}
+</div>
+
+
+
+</form>
+    
+    
+    
+
+
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "portal/base.html" %}
+
+
+{% block content %}
+{% load portal_tags %}
+
+<style>
+    #submit-button {
+        position: relative;
+        top: -25px;
+    }
+    
+    #in-label {
+        position: relative;
+        left: 0px;
+        top: -15px; 
+    }
+    
+    #out-label {
+        position: relative;
+        left: 215px;
+        top: -65px; 
+    }
+    
+    #current-date {
+        position: relative;
+        top: -15px;
+    }
+    
+    #in-form {
+        position: relative;
+        right: 15px;
+        top: -15px; 
+    }
+    
+    #out-form {
+        position: relative;
+        left: 200px;
+        top: -65px;
+    }
+    
+    #back-link {
+        position: relative;
+        left: 200px;
+        top: -30px;
+    }
+</style>
+
+<div class="container page-header">
+    <h3>Add a Shift</h3>
+    <p><small>Use this page to add or delete a shift</small></p>
+</div>
+
+
+
+<div class="container" id="current-date">
+    <h4>{{ current_date }}</h4>
+    <div class="container" id="back-link">
+        <a href="{{ back_link }}">View Calendar</a>
+    </div>
+
+</div>
+
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+            <div class="container row">
+                <p id="in-label"><strong>Shift Start</strong></p>
+                <div class="container" id="in-form">
+                    {{ time_select.in_hour }}
+                    {{ time_select.in_minute }}
+                    {{ time_select.in_am_pm }}
+                </div>
+                
+                <p id="out-label"><strong>Shift End</strong></p>
+                <div class="container" id="out-form">
+                    {{ time_select.out_hour }}
+                    {{ time_select.out_minute }}
+                    {{ time_select.out_am_pm }}
+                </div>
+            </div>
+        <button id="submit-button" type="submit" class="btn">Add Shift</button>
+    </form>
+</div>
+
+
+
+<div class="container">
+    <table class="container table table-bordered table-condensed">
+        <th>Shift Start</th>
+        <th>Shift End</th>
+        <th>Delete Shift</th>
+        
+        {% for shift in starts %}
+            <tr>
+                <td>{{ starts|index:forloop.counter0 }}</td>
+                <td>{{ ends|index:forloop.counter0 }}</td>
+                <td><a href="{{ delete_string|index:forloop.counter0 }}">Remove Shift</a> </td>
+            </tr>
+        {% endfor %}
+        
+    </table>  
+</div>
+
+
+{% endblock %}
